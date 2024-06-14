@@ -12,7 +12,6 @@ const routes = require("./routes");
 const loginRoutes = require("./routes/login");
 const signupRoutes = require("./routes/signup");
 
-// app.use(cors({ origin: "http://192.168.1.42:3000" }));
 app.use(express.json());
 
 app.use("/", routes);
