@@ -10,13 +10,15 @@ type FormData = {
   confirmPassword?: string;
 };
 
+// type FormErrors = Partial<Record<keyof FormData, string>>;
+
 const SignUp: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [errors, setErrors] = useState<any>({});
 
   const schema = object({
     name: string().min(3, 'Name must be at least 3 characters'),
@@ -36,7 +38,11 @@ const SignUp: React.FC = () => {
       setErrors({});
       return true;
     } catch (err: any) {
-      setErrors(err.errors);
+      const fieldErrors: any = {};
+      err.errors.forEach((error: any) => {
+        fieldErrors[error.path[0]] = error.message;
+      });
+      setErrors(fieldErrors);
       return false;
     }
   };
@@ -46,9 +52,13 @@ const SignUp: React.FC = () => {
     setLoading(true);
 
     const isValid = await validateData();
-
+    console.log(isValid);
     if (isValid) {
-      const formData: FormData = { name, email, password };
+      const formData = {
+        username: name,
+        email: email,
+        password: password,
+      };
       try {
         const response = await axios.post(
           'http://localhost:8000/signup',
@@ -70,7 +80,7 @@ const SignUp: React.FC = () => {
       <div className="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8 w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4 dark:text-white">Sign Up</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Form fields */}
+          {/* Name */}
           <div>
             <label
               htmlFor="name"
