@@ -10,8 +10,6 @@ type FormData = {
   confirmPassword?: string;
 };
 
-// type FormErrors = Partial<Record<keyof FormData, string>>;
-
 const SignUp: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
