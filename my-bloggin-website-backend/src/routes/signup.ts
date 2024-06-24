@@ -1,4 +1,6 @@
+var bcrypt = require("bcryptjs");
 import User from "../models/userModel";
+
 import express, { Request, Response } from "express";
 
 const signupRoutes = express.Router();
@@ -19,7 +21,10 @@ signupRoutes.post("/", async (req: Request, res: Response) => {
     }
 
     // Create a new user
-    const newUser = new User({ username, password, email });
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+
+    const newUser = new User({ username, password: hashedPassword, email });
     await newUser.save();
 
     res
