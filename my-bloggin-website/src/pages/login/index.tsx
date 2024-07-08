@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import z from 'zod';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Component() {
@@ -8,6 +8,7 @@ export default function Component() {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<any>({});
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const schema = z.object({
     email: z.string().email('Please enter a valid email!'),
@@ -47,7 +48,9 @@ export default function Component() {
           'http://localhost:8000/login',
           formData
         );
-        console.log('asd', response.data);
+        if (response.status === 200) {
+          navigate('/user');
+        }
       } catch (err: any) {
         console.log('asd');
         setErrors(err.formErrors?.fieldErrors);
@@ -75,8 +78,8 @@ export default function Component() {
               placeholder="Enter your email"
               className="w-full py-2 px-3 border"
               value={email}
-              // onChange={e => setEmail(e.target.value)}
-              onChange={e => setEmail('tasty@mail.com')}
+              onChange={e => setEmail(e.target.value)}
+              // onChange={e => setEmail('tasty@mail.com')}
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -108,7 +111,10 @@ export default function Component() {
             >
               Forgot password?
             </Link>
-            <button type="submit" className="w-auto">
+            <button
+              type="submit"
+              className="border-2 border-white text-white px-4 py-1 w-auto"
+            >
               Login
             </button>
           </div>
